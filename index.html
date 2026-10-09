@@ -12,7 +12,7 @@
       --panel: #0b0f14;
       /* 10× version of the arm picture (shown at 200px in the bar) */
       --bg-size: 2000px;
-      --bg-x: -260px;        /* tunable via dev sliders */
+      --bg-x: -2400px;       /* tunable via dev sliders */
       --bg-y: 80px;
       /* Surface behind the arm: ivory top half, gray tabletop bottom half */
       --ivory: #f6f1e0;
@@ -31,8 +31,15 @@
     html, body { margin: 0; height: 100%; }
     body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: #11151b;
       color: #e8edf2;
+      /* The big arm backdrop lives on the page itself, so it's always
+         visible whether or not the graph is open. */
+      background-color: var(--tabletop);
+      background-image: url("arm.png"), var(--surface);
+      background-repeat: no-repeat, no-repeat;
+      background-size: calc(var(--bg-size) * 2) 957px, 100% 100%;
+      background-position: var(--bg-x) var(--bg-y), 0 0;
+      background-attachment: fixed, fixed;   /* cover the viewport, always */
     }
 
     /* ── Menu bar ───────────────────────────────── */
@@ -91,12 +98,7 @@
       position: relative;            /* anchor for the draggable panel */
       min-height: calc(100vh - var(--bar-h));
       padding: 48px 24px;
-      /* arm picture layered over the ivory/gray surface */
-      background-image: url("arm.png"), var(--surface);
-      background-repeat: no-repeat, no-repeat;
-      /* arm stretched to twice its width, same height (was 2000px auto → ~957px tall) */
-      background-size: calc(var(--bg-size) * 2) 957px, 100% 100%;
-      background-position: var(--bg-x) var(--bg-y), 0 0;
+      /* transparent: the arm backdrop now lives on <body> and is always shown */
     }
     .graph-wrap.on { display: block; }
 
@@ -202,8 +204,8 @@
       <input type="range" id="handY" min="-100" max="150" step="5" value="30" />
     </div>
     <div class="dev-row">
-      <label for="bgX">Background X <span class="val" id="bgXVal">-260px</span></label>
-      <input type="range" id="bgX" min="-3000" max="1500" step="10" value="-260" />
+      <label for="bgX">Background X <span class="val" id="bgXVal">-2400px</span></label>
+      <input type="range" id="bgX" min="-3000" max="1500" step="10" value="-2400" />
     </div>
     <div class="dev-row">
       <label for="bgY">Background Y <span class="val" id="bgYVal">80px</span></label>
