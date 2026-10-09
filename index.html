@@ -10,6 +10,14 @@
       --box-w: 200px;
       --trace: #39ff14;      /* classic oscilloscope green */
       --panel: #0b0f14;
+      /* 10× version of the arm picture (shown at 200px in the bar) */
+      --bg-size: 2000px;
+      --bg-x: -260px;        /* tunable via dev sliders */
+      --bg-y: -120px;
+      /* Surface behind the arm: ivory top half, gray tabletop bottom half */
+      --ivory: #f6f1e0;
+      --tabletop: #8f8d86;
+      --surface: linear-gradient(to bottom, var(--ivory) 0 50%, var(--tabletop) 50% 100%);
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; height: 100%; }
@@ -36,7 +44,7 @@
       height: var(--bar-h);
       flex: 0 0 var(--box-w);
       margin-left: auto;            /* push to the right end of the bar */
-      background: #000;
+      background: var(--surface);
       border-left: 2px solid #0a0e13;
       display: flex;
       align-items: center;
@@ -65,12 +73,31 @@
     .btn:active { transform: translateY(1px); }
     .btn[aria-pressed="true"] { filter: brightness(0.85); }
 
-    /* ── Graph ──────────────────────────────────── */
+    /* ── Graph stage + panel ────────────────────── */
+    /* The stage: black, with a 10× arm picture as its background. */
     .graph-wrap {
-      margin: 24px;
       display: none;                 /* hidden until the button is pressed */
+      min-height: calc(100vh - var(--bar-h));
+      padding: 48px 24px;
+      /* arm picture layered over the ivory/gray surface */
+      background-image: url("arm.png"), var(--surface);
+      background-repeat: no-repeat, no-repeat;
+      background-size: var(--bg-size) auto, 100% 100%;
+      background-position: var(--bg-x) var(--bg-y), 0 0;
     }
     .graph-wrap.on { display: block; }
+
+    /* The graph itself is a panel floating above that background. */
+    .graph-panel {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 16px;
+      background: rgba(11, 15, 20, 0.92);
+      border: 2px solid #0a0e13;
+      border-radius: 12px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(2px);
+    }
     .graph-title {
       font-size: 0.85rem;
       letter-spacing: 0.08em;
@@ -138,11 +165,21 @@
       <label for="noiseAmp">Amplitude of noise <span class="val" id="noiseAmpVal">0.09</span></label>
       <input type="range" id="noiseAmp" min="0" max="0.5" step="0.005" value="0.09" />
     </div>
+    <div class="dev-row">
+      <label for="bgX">Background X <span class="val" id="bgXVal">-260px</span></label>
+      <input type="range" id="bgX" min="-3000" max="1500" step="10" value="-260" />
+    </div>
+    <div class="dev-row">
+      <label for="bgY">Background Y <span class="val" id="bgYVal">-120px</span></label>
+      <input type="range" id="bgY" min="-3000" max="1500" step="10" value="-120" />
+    </div>
   </aside>
 
   <section id="graphWrap" class="graph-wrap" aria-hidden="true">
-    <p class="graph-title">Nerve recording &mdash; live</p>
-    <canvas id="scope"></canvas>
+    <div class="graph-panel">
+      <p class="graph-title">Nerve recording &mdash; live</p>
+      <canvas id="scope"></canvas>
+    </div>
   </section>
 
   <script>
@@ -266,6 +303,20 @@
       noiseAmp = parseFloat(noiseSlider.value);
       noiseVal.textContent = noiseAmp.toFixed(3);
     });
+
+    // background-image X / Y position sliders (tune the 10× arm backdrop)
+    const root = document.documentElement;
+    function wireBgSlider(id, cssVar) {
+      const slider = document.getElementById(id);
+      const out = document.getElementById(id + 'Val');
+      slider.addEventListener('input', () => {
+        const px = slider.value + 'px';
+        root.style.setProperty(cssVar, px);
+        out.textContent = px;
+      });
+    }
+    wireBgSlider('bgX', '--bg-x');
+    wireBgSlider('bgY', '--bg-y');
   </script>
 </body>
 </html>
