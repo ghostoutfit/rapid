@@ -13,7 +13,7 @@
       /* 10× version of the arm picture (shown at 200px in the bar) */
       --bg-size: 2000px;
       --bg-x: -260px;        /* tunable via dev sliders */
-      --bg-y: -120px;
+      --bg-y: 80px;
       /* Surface behind the arm: ivory top half, gray tabletop bottom half */
       --ivory: #f6f1e0;
       --tabletop: #8f8d86;
@@ -87,7 +87,8 @@
       /* arm picture layered over the ivory/gray surface */
       background-image: url("arm.png"), var(--surface);
       background-repeat: no-repeat, no-repeat;
-      background-size: var(--bg-size) auto, 100% 100%;
+      /* arm stretched to twice its width, same height (was 2000px auto → ~957px tall) */
+      background-size: calc(var(--bg-size) * 2) 957px, 100% 100%;
       background-position: var(--bg-x) var(--bg-y), 0 0;
     }
     .graph-wrap.on { display: block; }
@@ -183,8 +184,8 @@
       <input type="range" id="bgX" min="-3000" max="1500" step="10" value="-260" />
     </div>
     <div class="dev-row">
-      <label for="bgY">Background Y <span class="val" id="bgYVal">-120px</span></label>
-      <input type="range" id="bgY" min="-3000" max="1500" step="10" value="-120" />
+      <label for="bgY">Background Y <span class="val" id="bgYVal">80px</span></label>
+      <input type="range" id="bgY" min="-3000" max="1500" step="10" value="80" />
     </div>
   </aside>
 
