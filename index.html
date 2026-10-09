@@ -18,6 +18,9 @@
       --ivory: #f6f1e0;
       --tabletop: #8f8d86;
       --surface: linear-gradient(to bottom, var(--ivory) 0 50%, var(--tabletop) 50% 100%);
+      /* Graph box size (tunable via dev sliders) */
+      --graph-w: 1000px;
+      --graph-h: 320px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; height: 100%; }
@@ -49,12 +52,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;            /* clip the shifted arm to the box */
     }
     .arm-box img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       display: block;
+      transform: translate(50px, 50px);   /* nudged right 50 / down 50 */
     }
 
     .btn {
@@ -89,7 +94,7 @@
 
     /* The graph itself is a panel floating above that background. */
     .graph-panel {
-      max-width: 1000px;
+      max-width: var(--graph-w);
       margin: 0 auto;
       padding: 16px;
       background: rgba(11, 15, 20, 0.92);
@@ -108,7 +113,7 @@
     canvas {
       display: block;
       width: 100%;
-      height: 320px;
+      height: var(--graph-h);
       background: var(--panel);
       border: 2px solid #0a0e13;
       border-radius: 8px;
@@ -164,6 +169,14 @@
     <div class="dev-row">
       <label for="noiseAmp">Amplitude of noise <span class="val" id="noiseAmpVal">0.09</span></label>
       <input type="range" id="noiseAmp" min="0" max="0.5" step="0.005" value="0.09" />
+    </div>
+    <div class="dev-row">
+      <label for="graphW">Graph width <span class="val" id="graphWVal">1000px</span></label>
+      <input type="range" id="graphW" min="400" max="1600" step="10" value="1000" />
+    </div>
+    <div class="dev-row">
+      <label for="graphH">Graph height <span class="val" id="graphHVal">320px</span></label>
+      <input type="range" id="graphH" min="120" max="640" step="10" value="320" />
     </div>
     <div class="dev-row">
       <label for="bgX">Background X <span class="val" id="bgXVal">-260px</span></label>
@@ -317,6 +330,20 @@
     }
     wireBgSlider('bgX', '--bg-x');
     wireBgSlider('bgY', '--bg-y');
+
+    // graph box size sliders — resize the panel/canvas, then rebuild buffer
+    function wireGraphSlider(id, cssVar) {
+      const slider = document.getElementById(id);
+      const out = document.getElementById(id + 'Val');
+      slider.addEventListener('input', () => {
+        const px = slider.value + 'px';
+        root.style.setProperty(cssVar, px);
+        out.textContent = px;
+        if (wrap.classList.contains('on')) sizeCanvas();
+      });
+    }
+    wireGraphSlider('graphW', '--graph-w');
+    wireGraphSlider('graphH', '--graph-h');
   </script>
 </body>
 </html>
