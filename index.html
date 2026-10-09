@@ -37,21 +37,22 @@
 
     /* ── Menu bar ───────────────────────────────── */
     .menubar {
+      position: relative;            /* anchor for the pinned arm box */
       height: var(--bar-h);
       display: flex;
       align-items: center;
-      gap: 24px;
-      padding-right: 24px;
+      justify-content: center;       /* center the button in the bar */
       background: #1c2733;
       border-bottom: 2px solid #0a0e13;
     }
 
     /* The 200×200 box holding the arm drawing — on the right, on black */
     .arm-box {
+      position: absolute;           /* pinned to the right, out of flow */
+      right: 0;
+      top: 0;
       width: var(--box-w);
       height: var(--bar-h);
-      flex: 0 0 var(--box-w);
-      margin-left: auto;            /* push to the right end of the bar */
       background: var(--surface);
       border-left: 2px solid #0a0e13;
       display: flex;
