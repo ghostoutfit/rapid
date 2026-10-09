@@ -30,18 +30,24 @@
       border-bottom: 2px solid #0a0e13;
     }
 
-    /* The 200×200 box holding the arm drawing */
+    /* The 200×200 box holding the arm drawing — on the right, on black */
     .arm-box {
       width: var(--box-w);
       height: var(--bar-h);
       flex: 0 0 var(--box-w);
-      background: #243343;
-      border-right: 2px solid #0a0e13;
+      margin-left: auto;            /* push to the right end of the bar */
+      background: #000;
+      border-left: 2px solid #0a0e13;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .arm-box svg { width: 100%; height: 100%; display: block; }
+    .arm-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
 
     .btn {
       font-size: 1.2rem;
@@ -118,41 +124,12 @@
 </head>
 <body>
   <header class="menubar">
-    <!-- 200px-wide box: forearm + hand of a darker-skinned person,
-         with a microneurography electrode in the forearm -->
-    <div class="arm-box" aria-label="Arm and hand with recording electrode">
-      <svg viewBox="0 0 200 200" role="img" aria-hidden="true">
-        <defs>
-          <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#8d5a3c" />
-            <stop offset="1" stop-color="#6b3f27" />
-          </linearGradient>
-        </defs>
-        <!-- forearm -->
-        <path d="M-5 128 Q 70 118 104 104 L 118 128 Q 80 150 -5 158 Z"
-              fill="url(#skin)" stroke="#4e2d1a" stroke-width="2"/>
-        <!-- palm -->
-        <path d="M104 104 Q 128 92 146 96 Q 168 100 170 118
-                 Q 172 136 150 146 Q 128 154 118 128 Z"
-              fill="url(#skin)" stroke="#4e2d1a" stroke-width="2"/>
-        <!-- fingers -->
-        <g fill="url(#skin)" stroke="#4e2d1a" stroke-width="2">
-          <path d="M150 97 Q 170 78 182 82 Q 190 86 180 104 Q 166 112 150 108 Z"/>
-          <path d="M156 104 Q 180 92 194 98 Q 200 104 188 118 Q 172 124 158 118 Z"/>
-          <path d="M156 118 Q 182 114 196 122 Q 200 130 186 138 Q 170 142 156 134 Z"/>
-          <path d="M152 132 Q 176 134 188 144 Q 190 152 176 156 Q 160 156 150 146 Z"/>
-        </g>
-        <!-- thumb -->
-        <path d="M110 118 Q 108 140 120 152 Q 132 160 138 150 Q 140 138 126 130 Z"
-              fill="url(#skin)" stroke="#4e2d1a" stroke-width="2"/>
-        <!-- electrode inserted into the forearm nerve -->
-        <line x1="60" y1="134" x2="40" y2="70" stroke="#c9d3dc" stroke-width="3"/>
-        <circle cx="60" cy="134" r="4" fill="#39ff14" stroke="#04140a" stroke-width="1.5"/>
-        <rect x="32" y="52" width="16" height="20" rx="3" fill="#2b3845" stroke="#c9d3dc" stroke-width="2"/>
-      </svg>
-    </div>
-
     <button id="go" class="btn" aria-pressed="false">Microneurography!</button>
+
+    <!-- 200px-wide box on the right: forearm + hand, on black -->
+    <div class="arm-box">
+      <img src="arm.png" alt="Forearm and hand" />
+    </div>
   </header>
 
   <aside id="devPanel" class="dev-panel" aria-hidden="true">
