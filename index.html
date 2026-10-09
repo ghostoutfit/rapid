@@ -80,6 +80,40 @@
       border: 2px solid #0a0e13;
       border-radius: 8px;
     }
+
+    /* ── Dev panel (type "dev" to toggle) ───────── */
+    .dev-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 240px;
+      height: 100%;
+      padding: 16px;
+      background: rgba(10, 14, 19, 0.96);
+      border-right: 2px solid var(--trace);
+      box-shadow: 4px 0 18px rgba(0, 0, 0, 0.5);
+      z-index: 50;
+      overflow-y: auto;
+      display: none;
+    }
+    .dev-panel.on { display: block; }
+    .dev-panel h2 {
+      margin: 0 0 14px;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--trace);
+    }
+    .dev-row { margin-bottom: 18px; }
+    .dev-row label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: #c6d2dd;
+      margin-bottom: 6px;
+    }
+    .dev-row label .val { color: var(--trace); font-variant-numeric: tabular-nums; }
+    .dev-row input[type="range"] { width: 100%; accent-color: var(--trace); }
   </style>
 </head>
 <body>
@@ -121,6 +155,14 @@
     <button id="go" class="btn" aria-pressed="false">Microneurography!</button>
   </header>
 
+  <aside id="devPanel" class="dev-panel" aria-hidden="true">
+    <h2>Dev &mdash; sliders</h2>
+    <div class="dev-row">
+      <label for="noiseAmp">Amplitude of noise <span class="val" id="noiseAmpVal">0.09</span></label>
+      <input type="range" id="noiseAmp" min="0" max="0.5" step="0.005" value="0.09" />
+    </div>
+  </aside>
+
   <section id="graphWrap" class="graph-wrap" aria-hidden="true">
     <p class="graph-title">Nerve recording &mdash; live</p>
     <canvas id="scope"></canvas>
@@ -154,11 +196,11 @@
     }
 
     const SCROLL = 2;        // pixel-columns of new signal per frame (speed)
-    const NOISE = 0.09;      // low-level static amplitude (fraction of half-height)
+    let noiseAmp = 0.09;     // low-level static amplitude (fraction of half-height)
 
     function nextSample() {
       // low-level static centered on zero
-      return (Math.random() * 2 - 1) * NOISE;
+      return (Math.random() * 2 - 1) * noiseAmp;
     }
 
     function draw() {
@@ -221,6 +263,31 @@
 
     window.addEventListener('resize', () => {
       if (wrap.classList.contains('on')) sizeCanvas();
+    });
+
+    // ── Dev panel: type "dev" anywhere to toggle it ──
+    const devPanel = document.getElementById('devPanel');
+    let typed = '';
+    window.addEventListener('keydown', (e) => {
+      // ignore typing while focused in a field
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+      if (e.key.length === 1) {
+        typed = (typed + e.key.toLowerCase()).slice(-3);
+        if (typed === 'dev') {
+          const on = devPanel.classList.toggle('on');
+          devPanel.setAttribute('aria-hidden', String(!on));
+          typed = '';
+        }
+      }
+    });
+
+    // amplitude-of-noise slider
+    const noiseSlider = document.getElementById('noiseAmp');
+    const noiseVal = document.getElementById('noiseAmpVal');
+    noiseSlider.addEventListener('input', () => {
+      noiseAmp = parseFloat(noiseSlider.value);
+      noiseVal.textContent = noiseAmp.toFixed(3);
     });
   </script>
 </body>
