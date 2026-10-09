@@ -13,11 +13,15 @@
       /* 10× version of the arm picture (shown at 200px in the bar) */
       --bg-size: 2000px;
       --bg-x: -2400px;       /* tunable via dev sliders */
-      --bg-y: 80px;
-      /* Surface behind the arm: ivory top half, gray tabletop bottom half */
+      --bg-y: 300px;
+      /* Surface behind the arm: ivory top, gray tabletop bottom */
       --ivory: #f6f1e0;
       --tabletop: #8f8d86;
+      /* small box: split at the midpoint */
       --surface: linear-gradient(to bottom, var(--ivory) 0 50%, var(--tabletop) 50% 100%);
+      /* big background: ivory/gray border shifted down 200px */
+      --surface-big: linear-gradient(to bottom,
+        var(--ivory) 0 calc(50% + 200px), var(--tabletop) calc(50% + 200px) 100%);
       /* Graph box initial position + size (then drag to move / resize) */
       --graph-x: 48px;
       --graph-y: 48px;
@@ -35,7 +39,7 @@
       /* The big arm backdrop lives on the page itself, so it's always
          visible whether or not the graph is open. */
       background-color: var(--tabletop);
-      background-image: url("arm.png"), var(--surface);
+      background-image: url("arm.png"), var(--surface-big);
       background-repeat: no-repeat, no-repeat;
       background-size: calc(var(--bg-size) * 2) 957px, 100% 100%;
       background-position: var(--bg-x) var(--bg-y), 0 0;
@@ -208,8 +212,8 @@
       <input type="range" id="bgX" min="-3000" max="1500" step="10" value="-2400" />
     </div>
     <div class="dev-row">
-      <label for="bgY">Background Y <span class="val" id="bgYVal">80px</span></label>
-      <input type="range" id="bgY" min="-3000" max="1500" step="10" value="80" />
+      <label for="bgY">Background Y <span class="val" id="bgYVal">300px</span></label>
+      <input type="range" id="bgY" min="-3000" max="1500" step="10" value="300" />
     </div>
   </aside>
 
